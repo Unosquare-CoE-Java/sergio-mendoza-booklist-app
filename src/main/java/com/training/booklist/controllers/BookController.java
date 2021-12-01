@@ -1,6 +1,7 @@
 package com.training.booklist.controllers;
 
 import com.training.booklist.dto.BookDto;
+import com.training.booklist.entities.BookEntity;
 import com.training.booklist.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,8 +15,8 @@ public class BookController {
     private BookService books;
 
     @RequestMapping("/books")
-    public List<BookDto> getBooks() {
-        return books.getBooks();
+    public List<BookEntity> getAllBooks() {
+        return books.getAllBooks();
     }
 
     @RequestMapping(method = RequestMethod.POST, value="/books")
@@ -27,13 +28,13 @@ public class BookController {
         books.saveBook(book);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value="/books/{name}")
-    public void updateBook(@RequestBody BookDto book, @PathVariable String name) {
-        books.updateBook(name, book);
+    @RequestMapping(method = RequestMethod.PUT, value="/books/{id}")
+    public void updateBook(@RequestBody BookDto book, @PathVariable Long id) {
+        books.updateBook(id, book);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value="/books/{name}")
-    public void deleteBook(@PathVariable String name) {
-        books.deleteBook(name);
+    @RequestMapping(method = RequestMethod.DELETE, value="/books/{id}")
+    public void deleteBook(@PathVariable Long id) {
+        books.deleteBook(id);
     }
 }
