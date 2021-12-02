@@ -1,7 +1,9 @@
 package com.training.booklist.services;
 
+import com.training.booklist.dao.BookDao;
 import com.training.booklist.dao.UserDao;
 import com.training.booklist.dto.UserDto;
+import com.training.booklist.entities.BookEntity;
 import com.training.booklist.entities.UserEntity;
 import com.training.booklist.exceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ import java.util.List;
 public class UserService implements Users {
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private BookDao bookDao;
 
 
     // for testing purposes
@@ -67,7 +72,7 @@ public class UserService implements Users {
         UserEntity userEntity = new UserEntity();
 
         if(userDao.existsById(id)) {
-            userEntity.setId(id);
+            userEntity = userDao.getById(id);
             userEntity.setFirstName(user.getFirstName());
             userEntity.setLastName(user.getLastName());
             userEntity.setCountry(user.getCountry());
@@ -86,6 +91,16 @@ public class UserService implements Users {
             userDao.deleteById(id);
         } else {
             throw new BadRequestException("User didn't exists ot there is a mistype error");
+        }
+    }
+
+    @Override
+    public void addBook(Long bookId, Long userid) {
+        if(userDao.existsById(userid) && bookDao.existsById(bookId)) {
+            BookEntity book = bookDao.getBookEntityById(bookId);
+            UserEntity user = userDao.getById(userid);
+            user.addBook(book);
+            userDao.save(user);
         }
     }
 }

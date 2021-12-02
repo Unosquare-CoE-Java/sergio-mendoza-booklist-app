@@ -9,4 +9,5 @@ public interface Users {
     void saveUser(UserDto user);
     void updateUser(Long id, UserDto user);
     void deleteUser(Long id);
+    void addBook(Long bookId, Long userid);
 }

@@ -1,9 +1,12 @@
 package com.training.booklist.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -32,4 +35,20 @@ public class BookEntity {
 
         @Column(name = "PublishedDate")
         public String publishedDate;
+
+        @ManyToMany(fetch = FetchType.LAZY)
+        @JoinTable(name = "Books_Categories",
+                joinColumns = { @JoinColumn(name = "Bookid")},
+                inverseJoinColumns = { @JoinColumn(name = "id")})
+        public Set<CategoryEntity> categories = new HashSet<>();
+
+        @ManyToMany(mappedBy = "books")
+        @JsonIgnore
+        public Set<UserEntity> users = new HashSet<>();
+
+        public void addCategory(CategoryEntity category) {
+                this.categories.add(category);
+                category.getBooks().add(this);
+        }
 }
+

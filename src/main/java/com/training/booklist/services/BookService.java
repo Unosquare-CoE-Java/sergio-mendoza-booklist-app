@@ -1,8 +1,11 @@
 package com.training.booklist.services;
 
 import com.training.booklist.dao.BookDao;
+import com.training.booklist.dao.CategoryDao;
 import com.training.booklist.dto.BookDto;
+import com.training.booklist.dto.CategoryDto;
 import com.training.booklist.entities.BookEntity;
+import com.training.booklist.entities.CategoryEntity;
 import com.training.booklist.exceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,9 @@ public class BookService implements Books {
     @Autowired
     private BookDao bookDao;
 
+    @Autowired
+    private CategoryDao categoryDao;
+
 // for testing purposes
     @Override
     public List<BookEntity> getAllBooks() {
@@ -25,33 +31,15 @@ public class BookService implements Books {
     }
 
     @Override
-    public void saveBook(BookDto book) {
-        BookEntity bookEntity = new BookEntity();
-
-        bookEntity.setDescription(book.getDescription());
-        bookEntity.setAuthor(book.getAuthor());
-        bookEntity.setIsbn(book.getIsbn());
-        bookEntity.setName(book.getName());
-        bookEntity.setPublisher(book.getPublisher());
-        bookEntity.setPublishedDate(book.getPublishedDate());
-
-        bookDao.save(bookEntity);
+    public void saveBook(BookEntity book) {
+        bookDao.save(book);
     }
 
     @Override
-    public void updateBook(Long id, BookDto book) {
-        BookEntity bookEntity = new BookEntity();
-
+    public void updateBook(Long id, BookEntity book) {
         if(bookDao.existsById(id)) {
-            bookEntity.setId(id);
-            bookEntity.setDescription(book.getDescription());
-            bookEntity.setAuthor(book.getAuthor());
-            bookEntity.setIsbn(book.getIsbn());
-            bookEntity.setName(book.getName());
-            bookEntity.setPublisher(book.getPublisher());
-            bookEntity.setPublishedDate(book.getPublishedDate());
-
-            bookDao.save(bookEntity);
+            book.setId(id);
+            bookDao.save(book);
         } else {
             throw new BadRequestException("Non existent book");
         }
@@ -63,6 +51,16 @@ public class BookService implements Books {
             bookDao.deleteById(id);
         } else {
             throw new BadRequestException("Book already deleted");
+        }
+    }
+
+    @Override
+    public void addCategory(Long categoryid, Long bookid) {
+        if(categoryDao.existsById(categoryid) && bookDao.existsById(bookid)) {
+            CategoryEntity category = categoryDao.getCategoryEntityById(categoryid);
+            BookEntity book = bookDao.getBookEntityById(bookid);
+            book.addCategory(category);
+            bookDao.save(book);
         }
     }
 }

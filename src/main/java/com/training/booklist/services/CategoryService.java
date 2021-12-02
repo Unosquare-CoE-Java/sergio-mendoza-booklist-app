@@ -7,11 +7,22 @@ import com.training.booklist.exceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service
 public class CategoryService implements Categories{
     @Autowired
     private CategoryDao categoryDao;
+
+    @Override
+    public List<CategoryEntity> getAllCategories() {
+        List<CategoryEntity> categoryEntity = new ArrayList<>();
+        categoryDao.findAll()
+                .forEach(categoryEntity::add);
+        return categoryEntity;
+    }
 
     @Override
     public void saveCategory(CategoryDto category) {
@@ -29,9 +40,9 @@ public class CategoryService implements Categories{
             throw new BadRequestException("Category already deleted");
         }
     }
-
+/*
     @Override
     public void assignCategoryToBook(String name) {
 
-    }
+    }*/
 }

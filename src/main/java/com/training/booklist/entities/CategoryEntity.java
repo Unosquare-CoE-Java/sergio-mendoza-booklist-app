@@ -1,9 +1,12 @@
 package com.training.booklist.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
 
 @Getter
 @Setter
@@ -17,4 +20,8 @@ public class CategoryEntity {
 
     @Column(name = "Category")
     public String name;
+
+    @ManyToMany(mappedBy="categories", fetch = FetchType.LAZY)
+    @JsonIgnore
+    public Set<BookEntity> books = new HashSet<>();
 }

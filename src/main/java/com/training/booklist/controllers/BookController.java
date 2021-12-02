@@ -1,6 +1,5 @@
 package com.training.booklist.controllers;
 
-import com.training.booklist.dto.BookDto;
 import com.training.booklist.entities.BookEntity;
 import com.training.booklist.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +23,22 @@ public class BookController {
             value = "/saveBook",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public void saveBook(@RequestBody BookDto book) {
+    public void saveBook(@RequestBody BookEntity book) {
         books.saveBook(book);
     }
 
     @RequestMapping(method = RequestMethod.PUT, value="/books/{id}")
-    public void updateBook(@RequestBody BookDto book, @PathVariable Long id) {
+    public void updateBook(@RequestBody BookEntity book, @PathVariable Long id) {
         books.updateBook(id, book);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value="/books/{id}")
     public void deleteBook(@PathVariable Long id) {
         books.deleteBook(id);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value="/books/{bookid}/category/{categoryid}")
+    public void addCategory(@PathVariable Long categoryid, @PathVariable Long bookid) {
+        books.addCategory(categoryid, bookid);
     }
 }

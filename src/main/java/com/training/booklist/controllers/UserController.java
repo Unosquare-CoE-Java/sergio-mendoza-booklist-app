@@ -36,4 +36,9 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         users.deleteUser(id);
     }
+
+    @RequestMapping(method = RequestMethod.PUT, value="/users/{userId}/book/{bookId}")
+    public void addBook(@PathVariable Long bookId, @PathVariable Long userId) {
+        users.addBook(bookId, userId);
+    }
 }
