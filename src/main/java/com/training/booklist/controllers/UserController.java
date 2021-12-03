@@ -28,7 +28,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value="/users/{id}")
-    public void updateUser(@RequestBody UserDto user, @PathVariable Long id) {
+    public void updateUser(@RequestBody UserEntity user, @PathVariable Long id) {
         users.updateUser(id, user);
     }
 

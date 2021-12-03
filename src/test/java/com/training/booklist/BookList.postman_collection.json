@@ -1,0 +1,948 @@
+{
+	"info": {
+		"_postman_id": "fb9ff88d-83b0-4a43-838e-45bbf5e0da35",
+		"name": "BookList",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST Books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// const response = pm.response.json();\r",
+							"// pm.test(\"Response body should be empty\", () => {\r",
+							"//      pm.expect(response).to.eql(\"\");\r",
+							"// });\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"name\":\"The Last Wish\",\r\n        \"description\":\"Collection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45882\",\r\n        \"publishedDate\":\"1993\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8080/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Books Wrong Adress",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 405\", function () {\r",
+							"    pm.response.to.have.status(405);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"name\":\"The Last Wish\",\r\n        \"description\":\"Collection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45882\",\r\n        \"publishedDate\":\"1993\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/mock",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"mock"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Each Json has valid keys\", function () {\r",
+							"  var data = JSON.parse(responseBody);\r",
+							"  data.forEach(function(item) {\r",
+							"      pm.expect(item).to.have.all.keys('id', 'name', 'description', \r",
+							"      'publisher', 'author', 'isbn', 'publishedDate', 'categories'); \r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"const firstIdAvailable = response.filter((book) => book.id > 0);\r",
+							"\r",
+							"var AvailableBook = firstIdAvailable[0];\r",
+							"pm.globals.set(\"BookId\", AvailableBook.id);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second ollection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\":\"1995\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/:BookId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						":BookId"
+					],
+					"variable": [
+						{
+							"key": "BookId",
+							"value": "{{BookId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Category",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Fantasy\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Categories",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Each Json has valid keys\", function () {\r",
+							"  var data = JSON.parse(responseBody);\r",
+							"  data.forEach(function(item) {\r",
+							"      pm.expect(item).to.have.all.keys('id', 'name'); \r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"const firstIdAvailable = response.filter((category) => category.id > 0);\r",
+							"\r",
+							"var AvailableCategory = firstIdAvailable[0];\r",
+							"pm.globals.set(\"CategoryId\", AvailableCategory.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT AddCategoryToBook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/:BookId/category/:CategoryId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						":BookId",
+						"category",
+						":CategoryId"
+					],
+					"variable": [
+						{
+							"key": "BookId",
+							"value": "{{BookId}}"
+						},
+						{
+							"key": "CategoryId",
+							"value": "{{CategoryId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n          \r\n       \"firstName\":\"Giannis\",\r\n       \"lastName\":\"Antetokoumpo\",\r\n       \"password\":\"1234\",\r\n        \"country\":\"Greece\",\r\n        \"username\":\"TheGreekFreak\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/sign-up",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sign-up"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Each Json has valid keys\", function () {\r",
+							"  var data = JSON.parse(responseBody);\r",
+							"  data.forEach(function(item) {\r",
+							"      pm.expect(item).to.have.all.keys('id', 'firstName', 'lastName', \r",
+							"      'registrationDate', 'password', 'country', 'username', 'books');\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"const firstIdAvailable = response.filter((user) => user.id > 0);\r",
+							"\r",
+							"var AvailableUser = firstIdAvailable[0];\r",
+							"pm.globals.set(\"UserId\", AvailableUser.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT AddBookToUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/:UserId/book/:BookId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":UserId",
+						"book",
+						":BookId"
+					],
+					"variable": [
+						{
+							"key": "UserId",
+							"value": "{{UserId}}"
+						},
+						{
+							"key": "BookId",
+							"value": "{{BookId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n          \r\n       \"firstName\":\"Giannis\",\r\n       \"lastName\":\"Antetokoumpo\",\r\n       \"password\":\"1234\",\r\n        \"country\":\"Greece\",\r\n        \"username\":\"NBAChampBaby\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/:UserId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":UserId"
+					],
+					"variable": [
+						{
+							"key": "UserId",
+							"value": "{{UserId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT User NonExistent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response.error).to.eql(\"Bad Request\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n          \r\n       \"firstName\":\"Karim\",\r\n       \"lastName\":\"Abdul Jabbar\",\r\n       \"password\":\"1234\",\r\n        \"country\":\"US\",\r\n        \"username\":\"IRuledThemAll\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/:NonExistentId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":NonExistentId"
+					],
+					"variable": [
+						{
+							"key": "NonExistentId",
+							"value": "{{NonExistentId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Book NonExistent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response.error).to.eql(\"Bad Request\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second ollection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\":\"1995\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/:NonExistentId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						":NonExistentId"
+					],
+					"variable": [
+						{
+							"key": "NonExistentId",
+							"value": "{{NonExistentId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Book NonExistent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response.error).to.eql(\"Bad Request\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second ollection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\":\"1995\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/:NonExistentId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						":NonExistentId"
+					],
+					"variable": [
+						{
+							"key": "NonExistentId",
+							"value": "{{NonExistentId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Category NonExistent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response.error).to.eql(\"Bad Request\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second ollection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\":\"1995\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8080/categories/:NonExistentId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"categories",
+						":NonExistentId"
+					],
+					"variable": [
+						{
+							"key": "NonExistentId",
+							"value": "{{NonExistentId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE User NonExistent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response.error).to.eql(\"Bad Request\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second ollection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\":\"1995\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/:NonExistentId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":NonExistentId"
+					],
+					"variable": [
+						{
+							"key": "NonExistentId",
+							"value": "{{NonExistentId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second ollection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\":\"1995\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/:userId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{UserId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second ollection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\":\"1995\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/:BookId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						":BookId"
+					],
+					"variable": [
+						{
+							"key": "BookId",
+							"value": "{{BookId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Category",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second ollection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\":\"1995\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8080/categories/:CategoryId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"categories",
+						":CategoryId"
+					],
+					"variable": [
+						{
+							"key": "CategoryId",
+							"value": "{{CategoryId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

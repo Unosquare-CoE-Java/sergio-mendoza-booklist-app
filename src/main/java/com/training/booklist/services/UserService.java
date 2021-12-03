@@ -68,18 +68,10 @@ public class UserService implements Users {
     }
 
     @Override
-    public void updateUser(Long id, UserDto user) {
-        UserEntity userEntity = new UserEntity();
-
+    public void updateUser(Long id, UserEntity user) {
         if(userDao.existsById(id)) {
-            userEntity = userDao.getById(id);
-            userEntity.setFirstName(user.getFirstName());
-            userEntity.setLastName(user.getLastName());
-            userEntity.setCountry(user.getCountry());
-            userEntity.setUsername(user.getUsername());
-            userEntity.setPassword(user.getPassword());
-
-            userDao.save(userEntity);
+            user.setId(id);
+            userDao.save(user);
         } else {
             throw new BadRequestException("User didn't exists ot there is a mistype error");
         }

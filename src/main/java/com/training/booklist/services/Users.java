@@ -7,7 +7,7 @@ import java.util.List;
 public interface Users {
     List<UserEntity> getAllUsers();
     void saveUser(UserDto user);
-    void updateUser(Long id, UserDto user);
+    void updateUser(Long id, UserEntity user);
     void deleteUser(Long id);
     void addBook(Long bookId, Long userid);
 }
