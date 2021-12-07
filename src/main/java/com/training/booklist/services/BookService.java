@@ -2,8 +2,6 @@ package com.training.booklist.services;
 
 import com.training.booklist.dao.BookDao;
 import com.training.booklist.dao.CategoryDao;
-import com.training.booklist.dto.BookDto;
-import com.training.booklist.dto.CategoryDto;
 import com.training.booklist.entities.BookEntity;
 import com.training.booklist.entities.CategoryEntity;
 import com.training.booklist.exceptions.BadRequestException;

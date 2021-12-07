@@ -25,11 +25,8 @@ public class CategoryService implements Categories{
     }
 
     @Override
-    public void saveCategory(CategoryDto category) {
-        CategoryEntity categoryEntity = new CategoryEntity();
-
-        categoryEntity.setName(category.getName());
-        categoryDao.save(categoryEntity);
+    public void saveCategory(CategoryEntity category) {
+        categoryDao.save(category);
     }
 
     @Override
@@ -40,9 +37,4 @@ public class CategoryService implements Categories{
             throw new BadRequestException("Category already deleted");
         }
     }
-/*
-    @Override
-    public void assignCategoryToBook(String name) {
-
-    }*/
 }

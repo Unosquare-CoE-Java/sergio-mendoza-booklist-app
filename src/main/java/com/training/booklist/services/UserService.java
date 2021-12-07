@@ -1,5 +1,6 @@
 package com.training.booklist.services;
 
+import com.training.booklist.config.SecurityUser;
 import com.training.booklist.dao.BookDao;
 import com.training.booklist.dao.UserDao;
 import com.training.booklist.dto.UserDto;
@@ -7,6 +8,8 @@ import com.training.booklist.entities.BookEntity;
 import com.training.booklist.entities.UserEntity;
 import com.training.booklist.exceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -63,6 +66,7 @@ public class UserService implements Users {
         userEntity.setRegistrationDate(date);
         userEntity.setUsername(user.getUsername());
         userEntity.setPassword(user.getPassword());
+        userEntity.setRole(user.getRole());
 
         userDao.save(userEntity);
     }
@@ -73,7 +77,7 @@ public class UserService implements Users {
             user.setId(id);
             userDao.save(user);
         } else {
-            throw new BadRequestException("User didn't exists ot there is a mistype error");
+            throw new BadRequestException("User id: " + id + " didn't exists ot there is a mistype error");
         }
     }
 
@@ -94,5 +98,14 @@ public class UserService implements Users {
             user.addBook(book);
             userDao.save(user);
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        List<UserEntity> user = userDao.findAllByUsername(username);
+        if(user.size() == 0) {
+            throw new UsernameNotFoundException("User details not found for user: " + username);
+        }
+        return new SecurityUser(user.get(0));
     }
 }

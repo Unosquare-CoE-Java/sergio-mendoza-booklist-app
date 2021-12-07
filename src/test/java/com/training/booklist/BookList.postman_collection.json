@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "fb9ff88d-83b0-4a43-838e-45bbf5e0da35",
+		"_postman_id": "6f3fff2f-fcac-4fcc-8bfc-191888e10bcb",
 		"name": "BookList",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -375,7 +375,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n          \r\n       \"firstName\":\"Giannis\",\r\n       \"lastName\":\"Antetokoumpo\",\r\n       \"password\":\"1234\",\r\n        \"country\":\"Greece\",\r\n        \"username\":\"TheGreekFreak\"\r\n}"
+					"raw": "{\r\n          \r\n       \"firstName\":\"Giannis\",\r\n       \"lastName\":\"Antetokoumpo\",\r\n       \"password\":\"$2y$10$jdczlussaMbNuhKqstGs8eTRbAmQvR73UbaQmFiC25P5Gq6aRn5Uq\",\r\n        \"country\":\"Greece\",\r\n        \"username\":\"TheGreekFreak\",\r\n        \"role\": \"admin\"\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8080/sign-up",
@@ -402,7 +402,7 @@
 							"  var data = JSON.parse(responseBody);\r",
 							"  data.forEach(function(item) {\r",
 							"      pm.expect(item).to.have.all.keys('id', 'firstName', 'lastName', \r",
-							"      'registrationDate', 'password', 'country', 'username', 'books');\r",
+							"      'registrationDate', 'password', 'country', 'username', 'books', 'role');\r",
 							"  });\r",
 							"});\r",
 							"\r",
@@ -519,7 +519,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n          \r\n       \"firstName\":\"Giannis\",\r\n       \"lastName\":\"Antetokoumpo\",\r\n       \"password\":\"1234\",\r\n        \"country\":\"Greece\",\r\n        \"username\":\"NBAChampBaby\"\r\n}"
+					"raw": "{\r\n          \r\n       \"firstName\":\"Giannis\",\r\n       \"lastName\":\"Antetokoumpo\",\r\n       \"password\":\"1234\",\r\n        \"country\":\"Greece\",\r\n        \"username\":\"NBAChampBaby\",\r\n        \"role\": \"admin\"\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8080/users/:UserId",
@@ -943,6 +943,41 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "Password1",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "training",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }

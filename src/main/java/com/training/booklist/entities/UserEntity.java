@@ -37,7 +37,11 @@ public class UserEntity {
 
     @Column(name = "Password")
     public String password;
-
+/*
+    @Column(name = "Enabled")
+    public int enabled;
+ */
+    public String role;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Users_Books",
             joinColumns = { @JoinColumn(name = "id")},
