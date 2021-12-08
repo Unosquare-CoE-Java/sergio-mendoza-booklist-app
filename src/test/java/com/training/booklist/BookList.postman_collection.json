@@ -375,7 +375,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n          \r\n       \"firstName\":\"Giannis\",\r\n       \"lastName\":\"Antetokoumpo\",\r\n       \"password\":\"$2y$10$jdczlussaMbNuhKqstGs8eTRbAmQvR73UbaQmFiC25P5Gq6aRn5Uq\",\r\n        \"country\":\"Greece\",\r\n        \"username\":\"TheGreekFreak\",\r\n        \"role\": \"admin\"\r\n}"
+					"raw": "{\r\n          \r\n       \"firstName\":\"Giannis\",\r\n       \"lastName\":\"Antetokoumpo\",\r\n       \"password\":\"$2y$10$jdczlussaMbNuhKqstGs8eTRbAmQvR73UbaQmFiC25P5Gq6aRn5Uq\",\r\n        \"country\":\"Greece\",\r\n        \"username\":\"TheGreekFreak\",\r\n        \"role\": \"ADMIN\"\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8080/sign-up",
@@ -519,7 +519,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n          \r\n       \"firstName\":\"Giannis\",\r\n       \"lastName\":\"Antetokoumpo\",\r\n       \"password\":\"1234\",\r\n        \"country\":\"Greece\",\r\n        \"username\":\"NBAChampBaby\",\r\n        \"role\": \"admin\"\r\n}"
+					"raw": "{\r\n          \r\n       \"firstName\":\"Giannis\",\r\n       \"lastName\":\"Antetokoumpo\",\r\n       \"password\":\"$2y$10$jdczlussaMbNuhKqstGs8eTRbAmQvR73UbaQmFiC25P5Gq6aRn5Uq\",\r\n        \"country\":\"Greece\",\r\n        \"username\":\"NBAChampBaby\",\r\n        \"role\": \"admin\"\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8080/users/:UserId",

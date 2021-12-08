@@ -37,10 +37,15 @@ public class UserEntity {
 
     @Column(name = "Password")
     public String password;
-/*
-    @Column(name = "Enabled")
-    public int enabled;
- */
+
+    @Column(name = "Authorities")
+    @OneToMany(
+        mappedBy = "user",
+        fetch = FetchType.EAGER
+    )
+    @JsonIgnore
+    public Set<AuthorityEntity> authorities;
+
     public String role;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Users_Books",
