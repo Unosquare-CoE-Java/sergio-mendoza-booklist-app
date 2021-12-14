@@ -2,14 +2,19 @@ package com.training.booklist.services;
 
 import com.training.booklist.config.SecurityUser;
 import com.training.booklist.dao.BookDao;
+import com.training.booklist.dao.TokenDao;
 import com.training.booklist.dao.UserDao;
 import com.training.booklist.dto.UserDto;
 import com.training.booklist.entities.BookEntity;
+import com.training.booklist.entities.TokenEntity;
 import com.training.booklist.entities.UserEntity;
 import com.training.booklist.exceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -22,12 +27,18 @@ import java.util.List;
 
 
 @Service
-public class UserService implements Users {
+public class UserService implements Users, UserDetailsService {
     @Autowired
     private UserDao userDao;
 
     @Autowired
     private BookDao bookDao;
+
+    @Autowired
+    private TokenDao tokenDao;
+
+    @Autowired @Lazy
+    private PasswordEncoder passwordEncoder;
 
 
     // for testing purposes
@@ -65,8 +76,7 @@ public class UserService implements Users {
         userEntity.setCountry(user.getCountry());
         userEntity.setRegistrationDate(date);
         userEntity.setUsername(user.getUsername());
-        userEntity.setPassword(user.getPassword());
-        userEntity.setRole(user.getRole());
+        userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
 
         userDao.save(userEntity);
     }
@@ -87,6 +97,18 @@ public class UserService implements Users {
             userDao.deleteById(id);
         } else {
             throw new BadRequestException("User didn't exists ot there is a mistype error");
+        }
+    }
+
+    public void addToken(String username, String jwtToken) {
+        UserEntity user = userDao.getByUsername(username);
+        TokenEntity token = new TokenEntity();
+        boolean alreadyInDB = tokenDao.existsByUser(user);
+        if(alreadyInDB == false) {
+            token.setToken(jwtToken);
+            token.setUser(user);
+
+            tokenDao.save(token);
         }
     }
 

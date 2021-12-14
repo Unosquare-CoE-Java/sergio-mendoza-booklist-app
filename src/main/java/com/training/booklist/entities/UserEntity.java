@@ -43,10 +43,12 @@ public class UserEntity {
         mappedBy = "user",
         fetch = FetchType.EAGER
     )
-    @JsonIgnore
-    public Set<AuthorityEntity> authorities;
+    public Set<AuthorityEntity> authorities = new HashSet<>();
 
-    public String role;
+    @OneToOne(mappedBy = "user")
+    @JsonIgnore
+    private TokenEntity token;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Users_Books",
             joinColumns = { @JoinColumn(name = "id")},
@@ -56,5 +58,10 @@ public class UserEntity {
     public void addBook(BookEntity book) {
         this.books.add(book);
         book.getUsers().add(this);
+    }
+
+    public void addAuthority(AuthorityEntity authority) {
+        this.authorities.add(authority);
+        authority.setUser(this);
     }
 }

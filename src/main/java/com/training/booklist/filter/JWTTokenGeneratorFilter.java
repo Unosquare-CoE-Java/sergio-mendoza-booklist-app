@@ -36,17 +36,16 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String populateAuthorities(Collection<? extends GrantedAuthority> collection) {
+    public static String populateAuthorities(Collection<? extends GrantedAuthority> collection) {
         Set<String> authoritiesSet = new HashSet<>();
         for (GrantedAuthority authority : collection) {
             authoritiesSet.add(authority.getAuthority());
         }
         return String.join(",", authoritiesSet);
     }
-/* Makes the filter only applies in the log in
+ //Makes the filter only applies in the log in
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return !request.getServletPath().equals("/log-in");
+        return !request.getServletPath().equals("/signin");
     }
-*/
 }

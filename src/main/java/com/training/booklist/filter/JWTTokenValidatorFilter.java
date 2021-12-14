@@ -21,13 +21,11 @@ import java.nio.charset.StandardCharsets;
 
 public class JWTTokenValidatorFilter  extends OncePerRequestFilter {
     @Override
-    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String jwt = request.getHeader(SecurityConstants.JWT_HEADER);
-        if (null != jwt) {
+        if (jwt != null) {
             try {
-                SecretKey key = Keys.hmacShaKeyFor(
-                        SecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
+                SecretKey key = Keys.hmacShaKeyFor(SecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
 
                 Claims claims = Jwts.parserBuilder()
                         .setSigningKey(key)
@@ -40,16 +38,15 @@ public class JWTTokenValidatorFilter  extends OncePerRequestFilter {
                         AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }catch (Exception e) {
-                throw new BadCredentialsException("Invalid Token received!");
+                throw new BadCredentialsException("No Token received!");
             }
-
         }
         chain.doFilter(request, response);
     }
 
-/*
-    @Override protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getServletPath().equals("/log-in"); }
 
-*/
+    @Override protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getServletPath().equals("/signin"); }
+
+
 }
