@@ -39,13 +39,17 @@ public class UserEntity {
     public String password;
 
     @Column(name = "Authorities")
-    @OneToMany(
-        mappedBy = "user",
-        fetch = FetchType.EAGER
+    @OneToMany(mappedBy = "user"
+            ,fetch = FetchType.EAGER
+            ,orphanRemoval = true
+            , cascade=CascadeType.ALL
     )
     public Set<AuthorityEntity> authorities = new HashSet<>();
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "user",
+            orphanRemoval = true)
     @JsonIgnore
     private TokenEntity token;
 

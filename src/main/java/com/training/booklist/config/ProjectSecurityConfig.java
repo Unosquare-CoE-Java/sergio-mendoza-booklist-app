@@ -23,7 +23,7 @@ public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .cors().and().csrf().disable()// For testing using Postman, will keep it commented when no needed
+                .cors().and().csrf().disable()
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/signin").permitAll()
@@ -31,10 +31,9 @@ public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/books").permitAll()
                 .antMatchers(HttpMethod.GET,"/users").permitAll()
                 .antMatchers(HttpMethod.GET,"/categories").permitAll()
+                .antMatchers(HttpMethod.DELETE,"/users/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
-
                 .and()
-                //.formLogin().and()
                 .httpBasic();
 
     }

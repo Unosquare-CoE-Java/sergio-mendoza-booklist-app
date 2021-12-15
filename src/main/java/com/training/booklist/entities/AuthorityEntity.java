@@ -16,10 +16,11 @@ public class AuthorityEntity {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
     private UserEntity user;
 
+    @Column(nullable = false)
     public String name;
 }

@@ -33,7 +33,7 @@ public class SecurityUser implements UserDetails {
     public String getUsername() {
         return user.getUsername();
     }
-
+    // No need to expire/lock accounts, at the moment the overrided methods will stay true
     @Override
     public boolean isAccountNonExpired() {
         return true;

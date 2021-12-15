@@ -5,6 +5,7 @@ import com.training.booklist.dao.BookDao;
 import com.training.booklist.dao.TokenDao;
 import com.training.booklist.dao.UserDao;
 import com.training.booklist.dto.UserDto;
+import com.training.booklist.entities.AuthorityEntity;
 import com.training.booklist.entities.BookEntity;
 import com.training.booklist.entities.TokenEntity;
 import com.training.booklist.entities.UserEntity;
@@ -100,15 +101,30 @@ public class UserService implements Users, UserDetailsService {
         }
     }
 
+    @Override
     public void addToken(String username, String jwtToken) {
         UserEntity user = userDao.getByUsername(username);
         TokenEntity token = new TokenEntity();
         boolean alreadyInDB = tokenDao.existsByUser(user);
-        if(alreadyInDB == false) {
+        if(!alreadyInDB) {
             token.setToken(jwtToken);
             token.setUser(user);
 
             tokenDao.save(token);
+        } else {
+            token = tokenDao.getByUser(user);
+            token.setToken(jwtToken);
+
+            tokenDao.save(token);
+        }
+    }
+
+    @Override
+    public void addAuthority(Long id, AuthorityEntity authority) {
+        if(userDao.existsById(id)) {
+            UserEntity user = userDao.getById(id);
+            user.addAuthority(authority);
+            userDao.save(user);
         }
     }
 

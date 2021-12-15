@@ -6,4 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface TokenDao extends CrudRepository<TokenEntity, Long> {
     boolean existsByUser(UserEntity user);
+    TokenEntity getByUser(UserEntity user);
 }

@@ -1,13 +1,16 @@
 package com.training.booklist.controllers;
 
 import com.training.booklist.dto.LoginDto;
+import com.training.booklist.dto.ResponseDto;
 import com.training.booklist.dto.UserDto;
+import com.training.booklist.entities.AuthorityEntity;
 import com.training.booklist.entities.UserEntity;
 import com.training.booklist.filter.JWTTokenGeneratorFilter;
 import com.training.booklist.filter.constants.SecurityConstants;
 import com.training.booklist.services.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
+@Slf4j
 public class UserController {
     @Autowired
     private UserService users;
@@ -48,6 +52,11 @@ public class UserController {
         users.updateUser(id, user);
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value="/users/{id}/permissions")
+    public void addAuthority(@RequestBody AuthorityEntity authority, @PathVariable Long id) {
+        users.addAuthority(id, authority);
+    }
+
     @RequestMapping(method = RequestMethod.DELETE, value="/users/{id}")
     public void deleteUser(@PathVariable Long id) {
         users.deleteUser(id);
@@ -60,7 +69,7 @@ public class UserController {
 
     @PostMapping("/signin")
     // Authenticate user credentials and provides JWT
-    public void authenticateUser(@RequestBody LoginDto loginDto){
+    public ResponseDto authenticateUser(@RequestBody LoginDto loginDto){
         // Authenticate user
         Authentication authentication = authenticationManagerBean.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getUsername(), loginDto.getPassword()));
@@ -77,5 +86,10 @@ public class UserController {
 
         // Persist token to DB
         users.addToken(loginDto.getUsername(), jwt);
+
+        // Added to make testing in Postman easier
+        ResponseDto response = new ResponseDto();
+        response.setToken(jwt);
+        return response;
     }
 }

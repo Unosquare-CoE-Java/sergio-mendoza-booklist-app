@@ -1,6 +1,7 @@
 package com.training.booklist.services;
 
 import com.training.booklist.dto.UserDto;
+import com.training.booklist.entities.AuthorityEntity;
 import com.training.booklist.entities.UserEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,4 +14,6 @@ public interface Users {
     void deleteUser(Long id);
     void addBook(Long bookId, Long userid);
     UserDetails loadUserByUsername(String username);
+    void addToken(String username, String jwtToken);
+    void addAuthority(Long id, AuthorityEntity authority);
 }
