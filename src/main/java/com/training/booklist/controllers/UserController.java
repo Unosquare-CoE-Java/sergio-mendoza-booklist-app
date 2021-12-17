@@ -81,7 +81,7 @@ public class UserController {
                 .claim("username", authentication.getName())
                 .claim("authorities", JWTTokenGeneratorFilter.populateAuthorities(authentication.getAuthorities()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + 30000))
+                .setExpiration(new Date((new Date()).getTime() + 60000 * 60)) //Expire after 1 hour
                 .signWith(key).compact();
 
         // Persist token to DB
