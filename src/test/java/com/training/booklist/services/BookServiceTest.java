@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -32,7 +35,7 @@ class BookServiceTest {
         book.setIsbn("655435469494");
         book.setName("Jugando a ser dios, experimentos en vida artificial");
         book.setPublisher("UNAM");
-        book.setPublishedDate("18/08/2020");
+        book.setPublishedDate(LocalDate.parse("18/08/2020"));
         doNothing().when(bookService).saveBook(book);
         bookService.saveBook(book);
 
@@ -64,7 +67,7 @@ class BookServiceTest {
         book.setIsbn("655435469494");
         book.setName("Jugando a ser dios, experimentos en vida artificial");
         book.setPublisher("UNAM");
-        book.setPublishedDate("18/08/2020");
+        book.setPublishedDate(LocalDate.parse("18/08/2020"));
         bookDao.save(book);
 
         CategoryEntity category = new CategoryEntity();
