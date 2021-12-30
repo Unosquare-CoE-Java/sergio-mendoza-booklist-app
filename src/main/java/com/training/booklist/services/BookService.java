@@ -138,10 +138,9 @@ public class BookService implements Books {
     @Override
     public OldBookDto getOldestBook() {
         List<BookEntity> books = getAllBooks();
-        List<BookEntity> sortedByPublishedDateBooks = books.stream()
-                .sorted(Comparator.comparing(BookEntity::getPublishedDate))
-                .collect(Collectors.toList());
-        BookEntity oldestBook = sortedByPublishedDateBooks.get(0);
+        Optional<BookEntity> minBook = books.stream()
+                .min(Comparator.comparing(BookEntity::getPublishedDate));
+        BookEntity oldestBook = minBook.get();
         OldBookDto book = createOldBookDto(oldestBook);
 
         return book;
