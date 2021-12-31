@@ -73,7 +73,7 @@ public class UserServiceTest {
         book.setIsbn("655435469494");
         book.setName("Jugando a ser dios, experimentos en vida artificial");
         book.setPublisher("UNAM");
-        book.setPublishedDate(LocalDate.parse("18/08/2020"));
+        book.setPublishedDate(LocalDate.parse("2020-08-18"));
         bookDao.save(book);
 
         Long userId = user.getId();
