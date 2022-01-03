@@ -170,6 +170,7 @@
 							"\r",
 							"\r",
 							"pm.globals.set(\"Authentication\", response.token);\r",
+							"postman.setGlobalVariable('currentDate', (new Date()).toISOString());\r",
 							""
 						],
 						"type": "text/javascript"
@@ -216,11 +217,6 @@
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
-							"\r",
-							"// const response = pm.response.json();\r",
-							"// pm.test(\"Response body should be empty\", () => {\r",
-							"//      pm.expect(response).to.eql(\"\");\r",
-							"// });\r",
 							""
 						],
 						"type": "text/javascript"
@@ -243,7 +239,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "    {\r\n        \"name\":\"The Last Wish\",\r\n        \"description\":\"Collection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45882\",\r\n        \"publishedDate\":\"1993\"\r\n    }"
+					"raw": "    {\r\n        \"name\":\"Blood of Elves\",\r\n        \"description\":\"First novel about Geralt of Rivia and Ciri\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45882\",\r\n        \"publishedDate\":\"{{currentDate}}\"\r\n    }"
 				},
 				"url": {
 					"raw": "http://localhost:8080/books",
@@ -260,7 +256,56 @@
 			"response": []
 		},
 		{
-			"name": "Create category",
+			"name": "Create book Old",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.globals.set('OldestDate', '1985-06-21')"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authentication}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"name\":\"Skeleton Crew\",\r\n        \"description\":\"Collection of tales\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Stephen King\",\r\n        \"isbn\":\"45857\",\r\n        \"publishedDate\":\"1985-06-21\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8080/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create category Fantasy",
 			"event": [
 				{
 					"listen": "test",
@@ -307,6 +352,53 @@
 			"response": []
 		},
 		{
+			"name": "Create category Horror",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authentication}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Horror\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GET Books",
 			"event": [
 				{
@@ -329,7 +421,11 @@
 							"const firstIdAvailable = response.filter((book) => book.id > 0);\r",
 							"\r",
 							"var AvailableBook = firstIdAvailable[0];\r",
+							"var FantasyBook = firstIdAvailable[firstIdAvailable.length - 2];\r",
+							"var HorrorBook = firstIdAvailable[firstIdAvailable.length - 1];\r",
 							"pm.globals.set(\"BookId\", AvailableBook.id);\r",
+							"pm.globals.set(\"FantasyId\", FantasyBook.id);\r",
+							"pm.globals.set(\"HorrorId\", HorrorBook.id);\r",
 							""
 						],
 						"type": "text/javascript"
@@ -389,7 +485,11 @@
 							"const firstIdAvailable = response.filter((category) => category.id > 0);\r",
 							"\r",
 							"var AvailableCategory = firstIdAvailable[0];\r",
-							"pm.globals.set(\"CategoryId\", AvailableCategory.id);"
+							"pm.globals.set(\"CategoryId\", AvailableCategory.id);\r",
+							"var FantasyCategory = firstIdAvailable[firstIdAvailable.length - 2];\r",
+							"var HorrorCategory = firstIdAvailable[firstIdAvailable.length - 1];\r",
+							"pm.globals.set(\"FantasyCategory\", FantasyCategory.id);\r",
+							"pm.globals.set(\"HorrorCategory\", HorrorCategory.id);"
 						],
 						"type": "text/javascript"
 					}
@@ -406,6 +506,333 @@
 					],
 					"port": "8080",
 					"path": [
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT AddCategoryToBook Fantasy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authentication}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/:BookId/category/:CategoryId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						":BookId",
+						"category",
+						":CategoryId"
+					],
+					"variable": [
+						{
+							"key": "BookId",
+							"value": "{{FantasyId}}"
+						},
+						{
+							"key": "CategoryId",
+							"value": "{{FantasyCategory}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT AddCategoryToBook Horror",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authentication}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/:BookId/category/:CategoryId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						":BookId",
+						"category",
+						":CategoryId"
+					],
+					"variable": [
+						{
+							"key": "BookId",
+							"value": "{{HorrorId}}"
+						},
+						{
+							"key": "CategoryId",
+							"value": "{{HorrorCategory}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Oldest book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Each Json has valid keys\", function () {\r",
+							"  var data = JSON.parse(responseBody);\r",
+							"      pm.expect(data).to.have.all.keys('name', 'description', 'author', 'publishedDate', 'categories'); \r",
+							"});\r",
+							"\r",
+							"pm.test(\"This is the oldes book\", function () {\r",
+							"    var data = JSON.parse(responseBody);\r",
+							"      pm.expect(data.publishedDate).to.equal('1985-06-21'); \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/oldest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"oldest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Newest books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Newest book is here\", function () {\r",
+							"  var data = JSON.parse(responseBody);\r",
+							"      pm.expect(data[0]).to.equal('Blood of Elves');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/newest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"newest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Books By Author",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Authors are present\", function () {\r",
+							"  var data = JSON.parse(responseBody);\r",
+							"      pm.expect(data).to.have.all.keys('Andrzej Sapkowski', 'Stephen King'); \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/authors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Books By Category",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Categories are present\", function () {\r",
+							"  var data = JSON.parse(responseBody);\r",
+							"      pm.expect(data).to.have.all.keys('Horror', 'Fantasy'); \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
 						"categories"
 					]
 				}
@@ -492,7 +919,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second collection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\":\"1995\"\r\n    }"
+					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second collection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\": \"2012-03-19\"\r\n    }"
 				},
 				"url": {
 					"raw": "http://localhost:8080/books/:BookId",
@@ -509,66 +936,6 @@
 						{
 							"key": "BookId",
 							"value": "{{BookId}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "PUT AddCategoryToBook",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "{{Authentication}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:8080/books/:BookId/category/:CategoryId",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"books",
-						":BookId",
-						"category",
-						":CategoryId"
-					],
-					"variable": [
-						{
-							"key": "BookId",
-							"value": "{{BookId}}"
-						},
-						{
-							"key": "CategoryId",
-							"value": "{{CategoryId}}"
 						}
 					]
 				}
