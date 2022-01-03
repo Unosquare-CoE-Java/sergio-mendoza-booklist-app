@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6f3fff2f-fcac-4fcc-8bfc-191888e10bcb",
+		"_postman_id": "7d3515cc-30cf-48fe-bd7f-2cb7ce40f82f",
 		"name": "BookList",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -243,7 +243,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "    {\r\n        \"name\":\"The Last Wish\",\r\n        \"description\":\"Collection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45882\",\r\n        \"publishedDate\":\"1993\"\r\n    }"
+					"raw": "    {\r\n        \"name\":\"The Last Wish\",\r\n        \"description\":\"Collection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45882\",\r\n        \"publishedDate\":\"1993-04-25\"\r\n    }"
 				},
 				"url": {
 					"raw": "http://localhost:8080/books",
@@ -444,7 +444,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "    {\r\n        \"name\":\"The Last Wish\",\r\n        \"description\":\"Collection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45882\",\r\n        \"publishedDate\":\"1993\"\r\n    }"
+					"raw": "    {\r\n        \"name\":\"The Last Wish\",\r\n        \"description\":\"Collection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45882\",\r\n        \"publishedDate\":\"1993-04-28\"\r\n    }"
 				},
 				"url": {
 					"raw": "http://localhost:8080/books/mock",
@@ -492,7 +492,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second collection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\":\"1995\"\r\n    }"
+					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second collection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\":\"1995-05-15\"\r\n    }"
 				},
 				"url": {
 					"raw": "http://localhost:8080/books/:BookId",
@@ -724,7 +724,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second ollection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\":\"1995\"\r\n    }"
+					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second ollection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\":\"1995-05-15\"\r\n    }"
 				},
 				"url": {
 					"raw": "http://localhost:8080/books/:NonExistentId",

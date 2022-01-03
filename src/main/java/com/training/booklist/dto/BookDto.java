@@ -3,6 +3,8 @@ package com.training.booklist.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 public class BookDto {
@@ -11,5 +13,5 @@ public class BookDto {
     public String publisher;
     public String author;
     public String isbn;
-    public String publishedDate;
+    public LocalDate publishedDate;
 }

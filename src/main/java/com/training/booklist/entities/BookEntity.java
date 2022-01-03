@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ public class BookEntity {
         public String isbn;
 
         @Column(name = "PublishedDate")
-        public String publishedDate;
+        public LocalDate publishedDate;
 
         @ManyToMany(fetch = FetchType.LAZY)
         @JoinTable(name = "Books_Categories",
