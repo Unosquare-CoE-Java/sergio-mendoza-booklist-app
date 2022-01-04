@@ -1,8 +1,8 @@
 package com.training.booklist.controllers;
 
+import com.training.booklist.dto.BookSearchApiResultDto;
 import com.training.booklist.dto.OldBookDto;
 import com.training.booklist.entities.BookEntity;
-import com.training.booklist.entities.CategoryEntity;
 import com.training.booklist.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -65,5 +64,22 @@ public class BookController {
     @RequestMapping("/books/categories")
     public Map<String, List<String>> getBooksByCategory() {
         return books.getBooksByCategory();
+    }
+
+    // Just for testing in postman
+    @RequestMapping("/books/booklist-retriever")
+    public BookSearchApiResultDto testBookListRetriever(@RequestBody String book) {
+        return books.callToSearchByTitleApi(book);
+    }
+
+    @RequestMapping("/book/cover")
+    public String getCoverURL(@RequestBody String book) {
+        return books.getBookCover(book);
+    }
+
+    //Fills the coverUrl field for books stored in db
+    @RequestMapping(method = RequestMethod.PUT,value = "/book/update-cover")
+    public void updateCoverURL() {
+        books.updateBooksWithCoverUrl();
     }
 }

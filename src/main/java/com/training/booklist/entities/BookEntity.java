@@ -37,6 +37,9 @@ public class BookEntity {
         @Column(name = "PublishedDate")
         public LocalDate publishedDate;
 
+        @Column(name = "CoverURL")
+        private String coverUrl;
+
         @ManyToMany(fetch = FetchType.LAZY)
         @JoinTable(name = "Books_Categories",
                 joinColumns = { @JoinColumn(name = "Bookid")},

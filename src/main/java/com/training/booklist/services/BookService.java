@@ -3,6 +3,8 @@ package com.training.booklist.services;
 import com.training.booklist.dao.BookDao;
 import com.training.booklist.dao.CategoryDao;
 import com.training.booklist.dto.OldBookDto;
+import com.training.booklist.dto.BookDocsDto;
+import com.training.booklist.dto.BookSearchApiResultDto;
 import com.training.booklist.entities.BookEntity;
 import com.training.booklist.entities.CategoryEntity;
 import com.training.booklist.exceptions.BadRequestException;
@@ -11,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.springframework.web.client.RestTemplate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -24,6 +29,9 @@ public class BookService implements Books {
     @Autowired
     private CategoryDao categoryDao;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
 // for testing purposes
     @Override
     public List<BookEntity> getAllBooks() {
@@ -35,6 +43,7 @@ public class BookService implements Books {
 
     @Override
     public void saveBook(BookEntity book) {
+        book.setCoverUrl(getBookCover(book.getName()));
         bookDao.save(book);
     }
 
@@ -144,5 +153,46 @@ public class BookService implements Books {
         OldBookDto book = createOldBookDto(oldestBook);
 
         return book;
+    }
+
+    public String replaceSpacesWithPlus(String s) {
+        s = s.replaceAll("\\s", "+");
+        return s;
+    }
+
+    //This call is necessary to get the Isbn used inside Open Library for the desired book
+    //@Override
+    public BookSearchApiResultDto callToSearchByTitleApi(String book) {
+            String url = "http://openlibrary.org/search.json?title=" + replaceSpacesWithPlus(book);
+            RestTemplate rest = new RestTemplate();
+            BookSearchApiResultDto result = rest.getForObject(url, BookSearchApiResultDto.class);
+
+            return result;
+    }
+
+   // @Override
+    public String getBookCover(String book) {
+        try {
+            List<BookDocsDto> docs = callToSearchByTitleApi(book).getDocs();
+            BookDocsDto firstResult = docs.get(0);
+            String firstIsbn = firstResult.getIsbn().get(0);
+            String bookCoverURL = "https://covers.openlibrary.org/b/isbn/" + firstIsbn + "-L.jpg";
+
+            return bookCoverURL;
+        } catch(IndexOutOfBoundsException i) {
+            return "No covers found for the requested book";
+        }
+    }
+
+    // To update books already stored in db
+    public void updateBooksWithCoverUrl() {
+        List<BookEntity> bookEntity = new ArrayList<>();
+        bookDao.findAll()
+                .forEach((BookEntity book) -> {
+                    if(book.getCoverUrl() == null) {
+                        book.setCoverUrl(getBookCover(book.getName()));
+                        bookDao.save(book);
+                    }
+                });
     }
 }

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6f3fff2f-fcac-4fcc-8bfc-191888e10bcb",
+		"_postman_id": "a6fea7f1-2b93-4886-b974-f13b28f783cb",
 		"name": "BookList",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -412,7 +412,7 @@
 							"  var data = JSON.parse(responseBody);\r",
 							"  data.forEach(function(item) {\r",
 							"      pm.expect(item).to.have.all.keys('id', 'name', 'description', \r",
-							"      'publisher', 'author', 'isbn', 'publishedDate', 'categories'); \r",
+							"      'publisher', 'author', 'isbn', 'publishedDate', 'categories', 'coverUrl'); \r",
 							"  });\r",
 							"});\r",
 							"\r",
@@ -457,6 +457,98 @@
 					"port": "8080",
 					"path": [
 						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cover Retriever",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\"Mistborn\""
+				},
+				"url": {
+					"raw": "http://localhost:8080/book/cover",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"book",
+						"cover"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Book List Retriever",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\"Mistborn\""
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/booklist-retriever",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"booklist-retriever"
 					]
 				}
 			},
@@ -937,6 +1029,54 @@
 							"key": "BookId",
 							"value": "{{BookId}}"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add covers to existing books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authentication}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"name\":\"The Sword of Destiny\",\r\n        \"description\":\"Second collection of stories about Geralt of Rivia\",\r\n        \"publisher\":\"Editorial Planeta\",\r\n        \"author\":\"Andrzej Sapkowski\",\r\n        \"isbn\":\"45883\",\r\n        \"publishedDate\": \"2012-03-19\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8080/book/update-cover",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"book",
+						"update-cover"
 					]
 				}
 			},

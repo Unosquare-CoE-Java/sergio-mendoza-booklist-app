@@ -2,6 +2,7 @@ package com.training.booklist.services;
 
 
 import com.training.booklist.dto.OldBookDto;
+import com.training.booklist.dto.BookSearchApiResultDto;
 import com.training.booklist.entities.BookEntity;
 
 import java.util.List;
