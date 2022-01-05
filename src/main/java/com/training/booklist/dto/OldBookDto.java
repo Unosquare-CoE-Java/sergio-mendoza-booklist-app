@@ -13,6 +13,7 @@ public class OldBookDto {
     private String name;
     private String description;
     private String author;
+    private String coverUrl;
     private LocalDate publishedDate;
     private Set<CategoryEntity> categories = new HashSet<>();
 }

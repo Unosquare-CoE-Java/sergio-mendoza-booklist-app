@@ -77,61 +77,69 @@ public class BookService implements Books {
     }
 
     @Override
-    public Map<String, Set<String>> getBooksByAuthor() {
+    public Map<String, Map<String, String>> getBooksByAuthor() {
         List<BookEntity> books = getAllBooks();
         Map<String, List<BookEntity>> booksFilteredByAuthor = books.stream()
                 .collect(Collectors.groupingBy(BookEntity::getAuthor));
     //  Getting the titles
-        Map<String, Set<String>> titlesFilteredByAuthor = new HashMap<>();
+        Map<String, Map<String, String>> titlesFilteredByAuthor = new HashMap<>();
         booksFilteredByAuthor.forEach((String author, List<BookEntity> bookList) -> {
-            titlesFilteredByAuthor.put(author, getNamesFromList(booksFilteredByAuthor.get(author)));
+            titlesFilteredByAuthor.put(author, getNamesAndCoversFromList(booksFilteredByAuthor.get(author)));
         });
 
         return titlesFilteredByAuthor;
     }
 
     @Override
-    public Set<String> getBooksPublishedThisYear() {
+    public Map<String, String> getBooksPublishedThisYear() {
         LocalDate dateObj = LocalDate.now();
         List<BookEntity> books = getAllBooks();
         List<BookEntity> recentBooks = books.stream()
                 .filter(book -> book.getPublishedDate().getYear() == dateObj.getYear())
                 .collect(Collectors.toList());
-        Set<String> booksPublishedThisYear = getNamesFromList(recentBooks);
+        Map<String, String> booksPublishedThisYear = getNamesAndCoversFromList(recentBooks);
 
         return booksPublishedThisYear;
     }
 
     @Override
-    public Map<String, List<String>> getBooksByCategory() {
+    public Map<String, List<Map<String, String>>> getBooksByCategory() {
         List<CategoryEntity> categories = categoryService.getAllCategories();
         Map<String, List<CategoryEntity>> booksFilteredByCategory = categories.stream()
                 .collect(Collectors.groupingBy(CategoryEntity::getName));
 
-        Map<String, List<String>> titlesFilteredByCategory = new HashMap<>();
+        Map<String, List<Map<String, String>>> titlesFilteredByCategory = new HashMap<>();
         booksFilteredByCategory.forEach((String name, List<CategoryEntity> categoriesList) -> {
-            List<String> bookNames = new ArrayList<>();
-            categoriesList.forEach((CategoryEntity category) -> bookNames.addAll(getNamesFromSet(category.getBooks())));
-            titlesFilteredByCategory.put(name, bookNames);
+            List<Map<String, String>> bookNames = new ArrayList<>();
+            categoriesList.forEach((CategoryEntity category) -> {
+                // We don't want empty fields in the result
+                if(!category.getBooks().isEmpty()) {
+                    bookNames.add(getNamesAndCoversFromSet(category.getBooks()));
+                    titlesFilteredByCategory.put(name, bookNames);
+                }
+            });
         });
 
         return titlesFilteredByCategory;
     }
 
-    public Set<String> getNamesFromList(List<BookEntity> books) {
-        Set<String> names = new HashSet<>();
-        books.forEach(book -> names.add(book.getName()));
+    @Override
+    public Map<String, String> getNamesAndCoversFromList(List<BookEntity> books) {
+        Map<String, String> names = new HashMap<>();
+        books.forEach(book -> names.put(book.getName(), book.getCoverUrl()));
 
         return names;
     }
 
-    public List<String> getNamesFromSet(Set<BookEntity> books) {
-        List<String> names = new ArrayList<>();
-        books.forEach(book -> names.add(book.getName()));
+    @Override
+    public Map<String, String> getNamesAndCoversFromSet(Set<BookEntity> books) {
+        Map<String, String> namesAndCovers = new HashMap<>();
+        books.forEach(book -> namesAndCovers.put(book.getName(), book.getCoverUrl()));
 
-        return names;
+        return namesAndCovers;
     }
 
+    @Override
     public OldBookDto createOldBookDto(BookEntity book) {
         OldBookDto oldBook = new OldBookDto();
         oldBook.setName(book.getName());
@@ -139,6 +147,7 @@ public class BookService implements Books {
         oldBook.setAuthor(book.getAuthor());
         oldBook.setPublishedDate(book.getPublishedDate());
         oldBook.setCategories(book.getCategories());
+        oldBook.setCoverUrl(book.getCoverUrl());
 
         return oldBook;
     }
@@ -155,22 +164,22 @@ public class BookService implements Books {
         return book;
     }
 
+    @Override
     public String replaceSpacesWithPlus(String s) {
         s = s.replaceAll("\\s", "+");
         return s;
     }
 
     //This call is necessary to get the Isbn used inside Open Library for the desired book
-    //@Override
+    @Override
     public BookSearchApiResultDto callToSearchByTitleApi(String book) {
             String url = "http://openlibrary.org/search.json?title=" + replaceSpacesWithPlus(book);
-            RestTemplate rest = new RestTemplate();
-            BookSearchApiResultDto result = rest.getForObject(url, BookSearchApiResultDto.class);
+            BookSearchApiResultDto result = restTemplate.getForObject(url, BookSearchApiResultDto.class);
 
             return result;
     }
 
-   // @Override
+    @Override
     public String getBookCover(String book) {
         try {
             List<BookDocsDto> docs = callToSearchByTitleApi(book).getDocs();
@@ -185,6 +194,7 @@ public class BookService implements Books {
     }
 
     // To update books already stored in db
+    @Override
     public void updateBooksWithCoverUrl() {
         List<BookEntity> bookEntity = new ArrayList<>();
         bookDao.findAll()

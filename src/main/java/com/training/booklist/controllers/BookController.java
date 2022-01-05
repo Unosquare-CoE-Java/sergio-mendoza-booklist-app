@@ -52,17 +52,17 @@ public class BookController {
     }
 
     @RequestMapping("/books/newest")
-    public Set<String> getThisYearBooks() {
+    public Map<String, String> getThisYearBooks() {
         return books.getBooksPublishedThisYear();
     }
 
     @RequestMapping("/books/authors")
-    public Map<String, Set<String>> getBooksByAuthor() {
+    public Map<String, Map<String, String>> getBooksByAuthor() {
         return books.getBooksByAuthor();
     }
 
     @RequestMapping("/books/categories")
-    public Map<String, List<String>> getBooksByCategory() {
+    public Map<String, List<Map<String, String>>> getBooksByCategory() {
         return books.getBooksByCategory();
     }
 

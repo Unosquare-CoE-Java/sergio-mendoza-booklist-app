@@ -7,13 +7,13 @@ import com.training.booklist.entities.BookEntity;
 import com.training.booklist.entities.CategoryEntity;
 import com.training.booklist.exceptions.BadRequestException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -25,8 +25,13 @@ import static org.mockito.Mockito.*;
 class BookServiceTest {
     @Mock
     BookService bookService;
+
+    @InjectMocks
+    BookService realService;
+
     @Mock
     BookDao bookDao;
+
     @Mock
     CategoryDao categoryDao;
 
@@ -80,10 +85,10 @@ class BookServiceTest {
         Long bookId = book.getId();
         Long categoryId = category.getId();
 
-        doNothing().when(bookService).addCategory(categoryId,bookId);
-        bookService.addCategory(categoryId,bookId);
+        doNothing().when(bookService).addCategory(categoryId, bookId);
+        bookService.addCategory(categoryId, bookId);
 
-        verify(bookService,times(1)).addCategory(categoryId,bookId);
+        verify(bookService, times(1)).addCategory(categoryId, bookId);
     }
 
     @Test
@@ -120,8 +125,8 @@ class BookServiceTest {
 
     @Test
     void shouldReturnBookFromThisYear() {
-        Set<String> expectedResult = new HashSet<>();
-        expectedResult.add("Enfoques sobre la globalización");
+        Map<String, String> expectedResult = new HashMap<>();
+        expectedResult.put("Enfoques sobre la globalización", "https://covers.openlibrary.org/b/isbn/1424177472-L.jpg");
         Mockito.when(bookService.getBooksPublishedThisYear()).thenReturn(expectedResult);
 
         BookEntity book = new BookEntity();
@@ -131,9 +136,82 @@ class BookServiceTest {
         book.setName("Enfoques sobre la globalización");
         book.setPublisher("UNAM");
         book.setPublishedDate(LocalDate.now());
+        book.setCoverUrl("https://covers.openlibrary.org/b/isbn/1424177472-L.jpg");
         bookDao.save(book);
 
-        Set<String> result = bookService.getBooksPublishedThisYear();
-        assertEquals(book.getName(), result.toArray()[0]);
+        Map<String, String> result = bookService.getBooksPublishedThisYear();
+        assertEquals(book.getCoverUrl(), result.get("Enfoques sobre la globalización"));
+    }
+
+    @Test
+    void convertToMapFromBookList() {
+        BookEntity book = new BookEntity();
+        book.setAuthor("Manuel Lopez Michelone");
+        book.setDescription("Analisis de los recursos informáticos que se usan para analizar la vida artificial");
+        book.setIsbn("655435469494");
+        book.setName("Jugando a ser dios, experimentos en vida artificial");
+        book.setPublisher("UNAM");
+        book.setPublishedDate(LocalDate.parse("2020-08-18"));
+
+        BookEntity secondBook = new BookEntity();
+        secondBook.setAuthor("Max Planck");
+        secondBook.setDescription("Introduction to theorical physics");
+        secondBook.setIsbn("46549687984321");
+        secondBook.setName("General mechanics");
+        secondBook.setPublisher("UNAM");
+        secondBook.setPublishedDate(LocalDate.parse("1928-03-17"));
+
+        Map<String, String> expectedResult = new HashMap<>();
+        expectedResult.put("Jugando a ser dios, experimentos en vida artificial", null);
+        expectedResult.put("General mechanics", null);
+
+        List<BookEntity> bookList = new ArrayList<>();
+        bookList.add(book);
+        bookList.add(secondBook);
+
+        assertEquals(realService.getNamesAndCoversFromList(bookList), expectedResult);
+    }
+
+    @Test
+    void convertToMapFromBookSet() {
+        BookEntity book = new BookEntity();
+        book.setAuthor("Manuel Lopez Michelone");
+        book.setDescription("Analisis de los recursos informáticos que se usan para analizar la vida artificial");
+        book.setIsbn("655435469494");
+        book.setName("Jugando a ser dios, experimentos en vida artificial");
+        book.setPublisher("UNAM");
+        book.setPublishedDate(LocalDate.parse("2020-08-18"));
+
+        BookEntity secondBook = new BookEntity();
+        secondBook.setAuthor("Max Planck");
+        secondBook.setDescription("Introduction to theorical physics");
+        secondBook.setIsbn("46549687984321");
+        secondBook.setName("General mechanics");
+        secondBook.setPublisher("UNAM");
+        secondBook.setPublishedDate(LocalDate.parse("1928-03-17"));
+
+        Map<String, String> expectedResult = new HashMap<>();
+        expectedResult.put("Jugando a ser dios, experimentos en vida artificial", null);
+        expectedResult.put("General mechanics", null);
+
+        Set<BookEntity> bookList = new HashSet<>();
+        bookList.add(book);
+        bookList.add(secondBook);
+
+        assertEquals(realService.getNamesAndCoversFromSet(bookList), expectedResult);
+    }
+
+    @Test
+    void verifyupdateBooksWithCoverUrl() {
+        bookService.updateBooksWithCoverUrl();
+        verify(bookService, atLeastOnce()).updateBooksWithCoverUrl();
+    }
+
+    @Test
+    void getNonExistentBookCover() {
+        String mockName = "Rebels of the neon god";
+
+        doThrow(IndexOutOfBoundsException.class).when(bookService).getBookCover(mockName);
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> bookService.getBookCover(mockName));
     }
 }

@@ -737,7 +737,7 @@
 							"\r",
 							"pm.test(\"Each Json has valid keys\", function () {\r",
 							"  var data = JSON.parse(responseBody);\r",
-							"      pm.expect(data).to.have.all.keys('name', 'description', 'author', 'publishedDate', 'categories'); \r",
+							"      pm.expect(data).to.have.all.keys('name', 'description', 'author', 'publishedDate', 'categories', 'coverUrl'); \r",
 							"});\r",
 							"\r",
 							"pm.test(\"This is the oldes book\", function () {\r",
@@ -791,10 +791,7 @@
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Newest book is here\", function () {\r",
-							"  var data = JSON.parse(responseBody);\r",
-							"      pm.expect(data[0]).to.equal('Blood of Elves');\r",
-							"});"
+							""
 						],
 						"type": "text/javascript"
 					}
