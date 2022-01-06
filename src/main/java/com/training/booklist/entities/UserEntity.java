@@ -38,6 +38,21 @@ public class UserEntity {
     @Column(name = "Password")
     public String password;
 
+    @Column(name = "Authorities")
+    @OneToMany(mappedBy = "user"
+            ,fetch = FetchType.EAGER
+            ,orphanRemoval = true
+            , cascade=CascadeType.ALL
+    )
+    public Set<AuthorityEntity> authorities = new HashSet<>();
+
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "user",
+            orphanRemoval = true)
+    @JsonIgnore
+    private TokenEntity token;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Users_Books",
             joinColumns = { @JoinColumn(name = "id")},
@@ -47,5 +62,10 @@ public class UserEntity {
     public void addBook(BookEntity book) {
         this.books.add(book);
         book.getUsers().add(this);
+    }
+
+    public void addAuthority(AuthorityEntity authority) {
+        this.authorities.add(authority);
+        authority.setUser(this);
     }
 }

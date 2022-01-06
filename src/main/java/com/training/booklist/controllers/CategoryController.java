@@ -21,10 +21,10 @@ public class CategoryController {
 
     @RequestMapping(method = RequestMethod.POST, value="/categories")
     @PostMapping(
-            value = "/saveBook",
+            value = "/saveCategory",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public void saveCategory(@RequestBody CategoryDto category){
+    public void saveCategory(@RequestBody CategoryEntity category){
         categories.saveCategory(category);
     }
 

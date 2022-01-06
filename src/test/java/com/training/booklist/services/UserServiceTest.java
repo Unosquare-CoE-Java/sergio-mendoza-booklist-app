@@ -1,70 +1,88 @@
 package com.training.booklist.services;
 
 import com.training.booklist.dao.BookDao;
-import com.training.booklist.dao.CategoryDao;
 import com.training.booklist.dao.UserDao;
 import com.training.booklist.dto.UserDto;
 import com.training.booklist.entities.BookEntity;
-import com.training.booklist.entities.CategoryEntity;
 import com.training.booklist.entities.UserEntity;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
+import com.training.booklist.exceptions.BadRequestException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDate;
+
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
     @Mock
-    private UserDao userDao;
-    @Mock
-    private BookDao bookDao;
-    @Mock
-    private UserEntity userEntity;
-    @Mock
-    private BookEntity bookEntity;
-    @Mock
-    private CategoryEntity categoryEntity;
-    @Mock
-    private CategoryDao categoryDao;
-    @Mock
     private UserService userService;
-
-    @Captor
-    private ArgumentCaptor<UserEntity> postArgumentCaptor;
+    @Mock
+    UserDao userDao;
+    @Mock
+    BookDao bookDao;
 
     @Test
-    @DisplayName("Save a user")
-    // id is a hardcoded value for now
     void saveUser() {
-
-        UserDto user = new UserDto();
-        user.setFirstName("Giannis");
-        user.setLastName("Antetokoumpo");
-        user.setPassword("1234");
-        user.setCountry("Greece");
-        user.setUsername("TheGreekFreak");
-
+        UserDto user = UserDto.builder()
+                .firstName("Luca")
+                .lastName("Turilli")
+                .country("Italy")
+                .username("rhapsodyGuitarist")
+                .password("ShredMachine1")
+                .build();
+        doNothing().when(userService).saveUser(user);
         userService.saveUser(user);
 
-        Mockito.verify(userDao, Mockito.times(1)).save(postArgumentCaptor.capture());
-
-        Assertions.assertThat(postArgumentCaptor.getValue().getFirstName()).isEqualTo("Giannis");
-
-        /*
-        Mockito.when(userDao.findById(1L)).thenReturn(Optional.of(user1));
-        Mockito.doThrow(userService.updateUser(2L, user));
-
-        UserDto user = new UserDto();
-        user.setFirstName("Pancho");
-        user.setLastName("Pistolas");
-        UserService userService = new UserService();
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
-            userService.updateUser(10L,user);
-        });
-        assertTrue(exception.getMessage().contains("User didn't exists ot there is a mistype error"));
-
-         */
+        verify(userService,times(1)).saveUser(user);
     }
+
+    @Test
+    void deleteNonexistentUser() {
+        Long mockId = 5000L;
+
+        doThrow(BadRequestException.class).when(userService).deleteUser(anyLong());
+        Assertions.assertThrows(BadRequestException.class, () -> userService.deleteUser(mockId));
+    }
+
+    @Test
+    void updateNonexistentUser() {
+        Long mockId = 5000L;
+        UserEntity user = new UserEntity();
+
+        doThrow(BadRequestException.class).when(userService).updateUser(mockId, user);
+        Assertions.assertThrows(BadRequestException.class, () -> userService.updateUser(mockId, user));
+    }
+
+    @Test
+    void addBook() {
+        UserEntity user = new UserEntity();
+        user.setFirstName("Luca");
+        user.setLastName("Turilli");
+        user.setCountry("Italy");
+        user.setUsername("rhapsodyGuitarist");
+        user.setPassword("ShredMachine1");
+        userDao.save(user);
+
+        BookEntity book = new BookEntity();
+        book.setAuthor("Manuel Lopez Michelone");
+        book.setDescription("Analisis de los recursos informáticos que se usan para analizar la vida artificial");
+        book.setIsbn("655435469494");
+        book.setName("Jugando a ser dios, experimentos en vida artificial");
+        book.setPublisher("UNAM");
+        book.setPublishedDate(LocalDate.parse("2020-08-18"));
+        bookDao.save(book);
+
+        Long userId = user.getId();
+        Long bookId = book.getId();
+
+        doNothing().when(userService).addBook(bookId,userId);
+        userService.addBook(bookId,userId);
+
+        verify(userService,times(1)).addBook(bookId,userId);
+    }
+
 }

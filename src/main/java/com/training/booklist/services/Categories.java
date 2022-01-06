@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface Categories {
     List<CategoryEntity> getAllCategories();
-    void saveCategory(CategoryDto category);
+    void saveCategory(CategoryEntity category);
     void deleteCategory(Long id);
     //void assignCategoryToBook(String name);
 }
